@@ -2,6 +2,8 @@
 import hashlib
 import base64
 
+# enlace: https://developers.sw.com.mx/knowledge-base/consumo-webservice-descarga-masiva-sat/
+
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 
