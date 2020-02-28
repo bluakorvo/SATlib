@@ -1,0 +1,33 @@
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+	<s:Header>
+		<o:Security s:mustUnderstand="1" xmlns:o="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+			<u:Timestamp u:Id="_0">
+				<u:Created>2019-01-09T16:32:25.000Z</u:Created>
+				<u:Expires>2019-01-09T16:37:25.000Z</u:Expires>
+			</u:Timestamp>
+			<o:BinarySecurityToken EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3" u:Id="uuid-99683976-cee9-4130-b198-b20654a524dc-1">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</o:BinarySecurityToken>
+			<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+				<SignedInfo>
+					<CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+					<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+					<Reference URI="#_0">
+						<Transforms>
+							<Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+						</Transforms>
+						<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+						<DigestValue>90E7w5gmdlFEvZrcGPtNMQHmg64=</DigestValue>
+					</Reference>
+				</SignedInfo>
+				<SignatureValue>hQXgMv/w0wyzsOcuRsu6+7jUrkaIUDpoBmc9sW0HS2hL/+Xy6xz9d8HjzmaMfw7XqLyhMy3GANXZtnAsUTDDvNA1S5moyaVlhIciKqBrjWq3JAGYFDshHF83X9Ndo0bj3zY5AKsxAuHqqFbUJHlnLiqcK2Obj+rHWPx17lmMTmhFvWds6s+/1+7p0rADH8m82kjbiDrLwzpG+e/5n73nvUTrDfY8bQJNMkFLNfHW5PAo7F3iQmhCA8B8PErVaki9mqAHOtIinyYVlr263sc2FfGWTDHLEtPljqHDhOYgxAIHhxmh+6ZXyYk8xmPmlbfSNJ1JiDVarmsgEIlGQxbxTA==</SignatureValue>
+				<KeyInfo>
+					<o:SecurityTokenReference>
+						<o:Reference URI="#uuid-99683976-cee9-4130-b198-b20654a524dc-1" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3"/>
+					</o:SecurityTokenReference>
+				</KeyInfo>
+			</Signature>
+		</o:Security>
+	</s:Header>
+	<s:Body>
+		<Autentica xmlns="http://DescargaMasivaTerceros.gob.mx"/>
+	</s:Body>
+</s:Envelope>

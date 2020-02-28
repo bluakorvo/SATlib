@@ -1,27 +1,38 @@
 # Primeras pruebas para generar el XML de autentificacion para la descarga masiva de SAT
 import hashlib
 import base64
+import requests
+import uuid
 
 # enlace: https://developers.sw.com.mx/knowledge-base/consumo-webservice-descarga-masiva-sat/
 
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
+from datetime import datetime, timedelta
+
 
 class peticionAutentificacion:
     fecha = {"inicio": "", "final": ""}
-    FIELbytes = ""
-    UUIDV4 = ""
-    digestValue = ""
-    signatureValue = ""
+    FIELbytes = False
+    UUIDV4 = False
+    digestValue = False
+    signatureValue = False
 
-    llavePrivada = ""
-    certificado = ""
-    contraLlavePrivada = ""
+    llavePrivada = False
+    certificado = False
+    contraLlavePrivada = False
 
-    def __init__(self, fechaInicio, fechaFinal, FIELbytes, ):
+    def __init__(self, llavePrivada):
+		fechaInicio = datetime.utcnow()
+        fechaFinal = fechaInicio + timedelta(seconds=300)
+        fechaInicio = fechaInicio.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        fechaFinal = fechaFinal.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+		
+		self.UUIDV4 = uuid.uuid4()
+
         self.fecha["inicio"] = fechaInicio
         self.fecha["final"] = fechaFinal
-        self.llavePrivada = FIELbytes
+        self.llavePrivada = llavePrivada
 
     def _calculateDigestValue(self):
         preDigestValue = hashlib.sha1()
@@ -30,7 +41,7 @@ class peticionAutentificacion:
         
         return base64.b64encode(preDigestValue.digest())
 
-    def _calculateSIgnatureValue(self):
+    def _calculateSignatureValue(self):
         preSignatureValue = hashlib.sha1()
         signer = PKCS1_v1_5.new(llavePrivada)
 
@@ -39,6 +50,9 @@ class peticionAutentificacion:
         return signer.sign(preSignatureValue.digest())
 
     def _create(self):
+		_calculateDigestValue()
+		_calculateSignatureValue()
+
         body = """
 <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
 	<s:Header>
