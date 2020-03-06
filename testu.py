@@ -1,6 +1,6 @@
 from easySAT import Sat_pet as sat
 
-user = sat('MTN040706LVA', 'Abcd1234', r'mtn040706lva.cer', r'Claveprivada_FIEL_MTN040706LVA_20170225_123500.key')
+user = sat('file', '', r'file.cer', r'file.key')
 
 if __name__ == "__main__":
     user.create_dates('2019', '11', '9', '2019', '12', '9')
