@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+from io import BytesIO, TextIOWrapper
 
-import cfdiclient, base64, hashlib
+import cfdiclient, base64, hashlib, zipfile, csv
 
 # Esto es solo para mero debug, eliminar en la linea proinciapal
 
@@ -35,7 +36,7 @@ class Sat_pet:
         self._make_auth()
 
         if backup:
-            self.RFC = backup['RFC']
+            self.packages_to_download = [backup]
 
     def _make_auth(self):
         auth = cfdiclient.autenticacion.Autenticacion(self.fiel)
@@ -55,9 +56,12 @@ class Sat_pet:
             self.dates = False
             return False
 
-    def make_download_petition(self, RFC_emissor=None, RFC_receiver=None, only_metadata=True):
+    def make_download_petition(self, RFC_emissor=None, RFC_receiver=None, only_metadata=True, create_new = False):
         if not self.dates:
             return "ERROR: to continue the app need the dates to look on index"
+
+        if self.packages_to_download and not create_new:
+            return {'ERROR': 'You need to declare create new to delete current package to download'}
 
         type_of_download = 'Metadata'
 
@@ -94,9 +98,11 @@ class Sat_pet:
         return data
 
     def download_packages(self, save_as_files = False):
-        download_petition = self._verify_download_petition()
+        if not self.packages_to_download:
+            download_petition = self._verify_download_petition()
 
         # SEccion de debuggin
+        
         while True:
             if download_petition['estado_solicitud'] != '3':
                download_petition = self._verify_download_petition()
@@ -107,28 +113,58 @@ class Sat_pet:
             else:
                 break
         # Fin del Debugging
+        
         # if not self.packages_to_download:
             # download_petition = self._verify_download_petition()
 
         download = cfdiclient.descargamasiva.DescargaMasiva(self.fiel)
 
         data = []
+        # print(self.packages_to_download)
 
         for pack in self.packages_to_download:
             package = download.descargar_paquete(self.token, self.RFC, pack)
-            data.append(package['paquete_b64'])
+            # print(pack, ":", package['paquete_b64'])
+            data.append([pack, package['paquete_b64']])
 
+        # print(data)
+        """
         if save_as_files:
             for archive in data:
-                self.save_file(archive, 1)
+                var = self._read_b64_package(archive)
+                # for el in var:
+                #     print(el)
+        """
+        self.downloaded_packages = data
+
+        # return data
+
+    def _read_b64_package(self, b64package):
+        dataStorage = False
         
-        return data
+        csvramzip = BytesIO(base64.b64decode(b64package[1]))
+        csvziped = zipfile.ZipFile(csvramzip)
+    
+        files = csvziped.namelist()
 
-    def save_file(self, archivo, ID):
+        for csv_file in files:
+            csv_bin_file = csvziped.open(csv_file, 'r')
+            datosAlmacenar = csv.DictReader(TextIOWrapper(csv_bin_file, 'utf-8'), delimiter = '~')
+        
+        return datosAlmacenar
 
+    def return_requested_data(self):
+        cache = []
+
+        for pack in self.downloaded_packages:
+            cache.append(list(self._read_b64_package(pack)))
+        
+        return cache
+
+    def save_file(self, archivo):
         print("EstadoDeCosa:", archivo)
-        with open(ID + ".zip", "wb") as file:
-            file.write(base64.b64decode(archivo))
+        with open(archivo[0] + ".zip", "wb") as file:
+            file.write(base64.b64decode(archivo[1]))
             file.close()
         
     def save_as_dict(self):
