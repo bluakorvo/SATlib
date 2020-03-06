@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-import cfdiclient
+import cfdiclient, base64, hashlib
 
 # Esto es solo para mero debug, eliminar en la linea proinciapal
 
@@ -118,29 +118,24 @@ class Sat_pet:
             package = download.descargar_paquete(self.token, self.RFC, pack)
             data.append(package['paquete_b64'])
 
-        if data.count == 0:
-            return False
-        
         if save_as_files:
-            self.save_files()
+            for archive in data:
+                self.save_file(archive, 1)
         
         return data
 
-    def save_files(self, name = ''):
-        i = 0
+    def save_file(self, archivo, ID):
 
-        while self.downloaded_packages:
-            print("EstadoDeCosa:", self.downloaded_packages)
-            with open(name + str(self.packages_to_download[i]), "wb") as file:
-                file.write(base64.b64decode(self.downloaded_packages[i]))
-            
-            i = i + 1
-
+        print("EstadoDeCosa:", archivo)
+        with open(ID + ".zip", "wb") as file:
+            file.write(base64.b64decode(archivo))
+            file.close()
+        
     def save_as_dict(self):
-        return {'RFC': self.RFC,
+        return {'RFC': (self.RFC, self.RFC),
                 'dates': self.dates,
                 'id_download_solicitude': self.id_download_solicitude}
 
     def __str__(self):
-        return "RFC: %s\nToken: %s\nFechas: %s\nIDDescarga: %s\nCantidad de paquetes: %s" % (
-        self.RFC, self.token, self.dates, self.id_download_solicitude, self.packages_to_download)
+        return "RFC: %s\nToken: %s\nFechas: %s\nIDDescarga: %s\nCantidad de paquetes: %s paquetes: %s" % (
+        self.RFC, self.token, self.dates, self.id_download_solicitude, self.packages_to_download, self.downloaded_packages)
